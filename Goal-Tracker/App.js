@@ -6,6 +6,7 @@ import {
   Button,
   TextInput,
   ScrollView,
+  FlatList,
 } from "react-native";
 
 export default function App() {
@@ -31,13 +32,12 @@ export default function App() {
         <Button title="Add Goal" onPress={addGoalHandler} />
       </View>
       <View style={styles.listContainer}>
-      <ScrollView >
-        {list.map((items) => (
-          <Text key={Math.random().toString()} style={styles.individualGoal}>
-            {items}
-          </Text>
-        ))}
-      </ScrollView>
+        <FlatList
+          data={list}
+          renderItem={(itemData) => {
+            return <Text style={styles.individualGoal}>{itemData.item}</Text>;
+          }}
+        />
       </View>
     </View>
   );
