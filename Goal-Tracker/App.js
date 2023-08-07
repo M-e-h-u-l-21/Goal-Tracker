@@ -1,42 +1,55 @@
 import { useState } from "react";
 import {
   StyleSheet,
-  Text,
   View,
-  Button,
-  TextInput,
-  ScrollView,
   FlatList,
+  Button,
+  FlatListComponent,
 } from "react-native";
+import GoalItem from "./Components/GoalItem";
+import GoalInput from "./Components/GoalInput";
 
 export default function App() {
-  const [goal, updateGoal] = useState("");
   const [list, updateList] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const addGoalHandler = () => {
-    updateList((list) => [...list, goal]);
+  const startAddGoalHandler = () => {
+    setModalVisible(!modalVisible);
   };
 
-  const goalInputHandler = (enteredText) => {
-    updateGoal(enteredText);
+  const addGoalHandler = (goal) => {
+    updateList((list) => [
+      ...list,
+      { text: goal, id: Math.random().toString() },
+    ]);
+  };
+
+  const deleteGoalHandler = (id) => {
+    updateList((list) => {
+      return list.filter((goal) => goal.id !== id);
+    });
   };
 
   return (
     <View style={styles.appContainer}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Your course goal"
-          onChangeText={goalInputHandler}
-        />
-        <Button title="Add Goal" onPress={addGoalHandler} />
-      </View>
+      <Button title="Add New Goal" color="#5e0acc" onPress={startAddGoalHandler}/>
+      <GoalInput onAddGoal={addGoalHandler} visibility={modalVisible} />
       <View style={styles.listContainer}>
         <FlatList
           data={list}
           renderItem={(itemData) => {
-            return <Text style={styles.individualGoal}>{itemData.item}</Text>;
+            return (
+              <GoalItem
+                text={itemData.item.text}
+                id={itemData.item.id}
+                onDeleteItem={deleteGoalHandler}
+              />
+            );
+            // return <Text style={styles.individualGoal}>{itemData.item}</Text>;
           }}
+          // keyExtractor={(item, index) => {
+          //   return item.id;
+          // }}
         />
       </View>
     </View>
@@ -48,22 +61,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50,
     paddingHorizontal: 16,
-  },
-  inputContainer: {
-    flexDirection: "row",
-    flex: 1,
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#cccccc",
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: "#cccccc",
-    width: "70%",
-    marginRight: 8,
-    padding: 8,
   },
   listContainer: {
     flex: 6,
