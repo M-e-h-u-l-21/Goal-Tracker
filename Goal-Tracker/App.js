@@ -4,24 +4,29 @@ import {
   View,
   FlatList,
   Button,
-  FlatListComponent,
 } from "react-native";
 import GoalItem from "./Components/GoalItem";
 import GoalInput from "./Components/GoalInput";
+import { StatusBar } from "expo-status-bar";
 
 export default function App() {
   const [list, updateList] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
 
   const startAddGoalHandler = () => {
-    setModalVisible(!modalVisible);
+    setModalVisible(true);
   };
+
+  const endAddGoalHandler=()=>{
+    setModalVisible(false)
+  }
 
   const addGoalHandler = (goal) => {
     updateList((list) => [
       ...list,
       { text: goal, id: Math.random().toString() },
     ]);
+    endAddGoalHandler()
   };
 
   const deleteGoalHandler = (id) => {
@@ -31,9 +36,11 @@ export default function App() {
   };
 
   return (
+    <>
+    <StatusBar style="light"/>
     <View style={styles.appContainer}>
       <Button title="Add New Goal" color="#5e0acc" onPress={startAddGoalHandler}/>
-      <GoalInput onAddGoal={addGoalHandler} visibility={modalVisible} />
+      <GoalInput onAddGoal={addGoalHandler} visibility={modalVisible} onCancel={endAddGoalHandler} />
       <View style={styles.listContainer}>
         <FlatList
           data={list}
@@ -53,6 +60,7 @@ export default function App() {
         />
       </View>
     </View>
+    </>
   );
 }
 
@@ -61,6 +69,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50,
     paddingHorizontal: 16,
+    backgroundColor:'#1e085a'
   },
   listContainer: {
     flex: 6,
@@ -70,7 +79,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     padding: 8,
     borderRadius: 8,
-    color: "white",
+    color:'black',
     marginBottom: 16,
     backgroundColor: "#5e0acc",
   },
